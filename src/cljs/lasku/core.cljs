@@ -162,6 +162,7 @@
                                                                                         first)]
     [:div.container
      [:h2 name [:small.text-gray.float-right ref]]
+     [:p advisor]
      (for [task-group task-groups]
        [task-group-component task-group])
      ]))
@@ -187,13 +188,21 @@
 (defn customer-project-tile [{:keys [:project/name :project/ref] :as project}]
   [:div.tile
    [:div.tile-content
-    [:a.tile-title {:href (str "#/customers/" (:customer/id project) "/projects/" (:project/id project)) } name] [:small.text-gray.float-right ref]]])
+    [:a.tile-title.h5 {:href (str "#/customers/" (:customer/id project) "/projects/" (:project/id project)) } name]]
+   [:div.tile-action
+    [:button.btn.btn-link.btn-action.tooltip.tooltip-left.btn-lg
+     {:data-tooltip "Create invoice"}
+     [:i.icon.icon-mail]]
+    [:button.btn.btn-link.btn-action.tooltip.tooltip-left.btn-lg
+     {:data-tooltip "Create offer"}
+     [:i.icon.icon-share]]]])
 
 (defn customer-tab-item [selected-tab ref title]
   [:li.tab-item
    [:a (merge {:on-click #(reset! selected-tab ref)
                :href "#/customers"}
               (when (= @selected-tab ref) {:class "active"})) title]])
+
 
 (defn customer-item [{:keys [:customer/email :customer/id :customer/name :customer/contact :customer/city :customer/country :customer/zip :customer/department :customer/street :customer/projects]}]
   (let [selected-tab (r/atom :profile)]
@@ -221,16 +230,7 @@
           [:div.panel-body
            (for [project projects]
              [customer-project-tile (assoc project :customer/id id)])
-           ])
-        (when (= @selected-tab :profile)
-          [:div.panel-footer
-           [:div.columns
-            [:div.column.col-6.col-xs-12
-             [:button.btn.btn-block
-              "Discard"]]
-            [:div.column.col-6.col-xs-12
-             [:button.btn.btn-primary.btn-block
-              "Save"]]]])]])))
+           ])]])))
 
 (defn customer-list-component [state]
   [:div.container
